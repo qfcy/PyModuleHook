@@ -1,0 +1,11 @@
+*__pycache__*
+build
+pymodhook.egg-info
+README.rst
+tools/hook_win32/build
+tools/hook_win32/dist
+tools/hook_win32/CMakeFiles
+tools/hook_win32/hook_win32_autogen
+*.cmake
+*.user
+*.qt*
