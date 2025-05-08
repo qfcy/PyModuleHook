@@ -133,7 +133,7 @@ plt.show()
 
 pymodhook-patches目录内部包含了多个以模块名命名的json文件，包含不能hook的自定义的属性和函数名，用于兼容特定的Python库。  
 如`matplotlib.pyplot.json`的格式如下：
-```json
+```json5
 {
     // 每个键是可选的
     "export_attrs":["attr"], // 要导出的属性名（即plt.attr返回原始对象，而不是pyobject.ProxiedObj）
@@ -391,7 +391,7 @@ Internally, the library uses the `ObjChain` class from the `pyobject.objproxy` l
 The `pymodhook-patches` directory contains multiple JSON files named after Python modules. These files define custom attributes and function names that should not be hooked, ensuring compatibility with specific Python libraries.  
 
 For example, the structure of `matplotlib.pyplot.json` is as follows:  
-```json  
+```json5
 {
     // All keys are optional  
     "export_attrs": ["attr"],  // Attribute names to export (i.e., `plt.attr` returns the original object instead of a `pyobject.ProxiedObj`)  
