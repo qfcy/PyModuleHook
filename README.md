@@ -190,7 +190,7 @@ except Exception:
 另外对于特定库，可能还需要自行修改[pymodhook-patches目录](pymodhook-patches目录)。  
 
 #### 3.注入DLL
-在项目的[Release](https://github.com/qfcy/PyModuleHook/releases/latest)页面下载DLLInject_win_amd64.zip，即可。  
+在项目的[Release](https://github.com/qfcy/PyModuleHook/releases/latest)页面下载DLLInject_win_amd64.zip。  
 下载后解压并运行hook_win32.exe，搜索目标进程并选中，再点击"Inject DLL"按钮：  
 ![](https://i-blog.csdnimg.cn/direct/bb07a38301994bbabe40413a623feeed.png)
 如果注入成功，会看到这个提示：  
