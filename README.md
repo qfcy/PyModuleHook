@@ -149,7 +149,7 @@ pymodhook-patches目录内部包含了多个以模块名命名的json文件，�
 #### 1.复制模块文件
 首先用`pip install pymodhook`安装`pymodhook`及其依赖的`pyobject`包，
 再打开`<Python安装目录>/Lib/site-packages`文件夹（Python安装目录视环境而异），将`pyobject`包，`pymodhook.py`，[\_\_hook\_\_.py](tools/templates/__hook__.py)复制到目录下：  
-![](https://i-blog.csdnimg.cn/direct/5f4f06b6234d43d393e083786e10751a.png)
+![](https://i-blog.csdnimg.cn/direct/5f4f06b6234d43d393e083786e10751a.png)  
 另外如果是Python 3.8或以下的版本，还需要复制`astor`模块。  
 
 #### 2.修改 \_\_hook\_\_.py
