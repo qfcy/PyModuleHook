@@ -143,12 +143,12 @@ pymodhook-patches目录内部包含了多个以模块名命名的json文件，�
 ```
 
 ## DLL注入工具的用法
-仓库的目录[hook_win32](https://github.com/qfcy/PyModuleHook/tree/main/tools/hook_win32)包含了一个DLL注入的工具，由于只依赖于加载的python3x.dll，支持记录Nuitka/Cython打包的应用的模块调用，而不仅仅是PyInstaller。 
+仓库的目录[hook_win32](https://github.com/qfcy/PyModuleHook/tree/main/tools/hook_win32)包含了一个DLL注入的工具，由于只依赖于加载的python3x.dll，支持记录Nuitka/Cython打包的应用的模块调用，而不仅仅是PyInstaller。  
 **备注：请勿用本工具注入未授权的商业软件！**  
 
 #### 1.复制模块文件
 首先用`pip install pymodhook`安装`pymodhook`及其依赖的`pyobject`包，
-再打开`<Python安装目录>/Lib/site-packages`文件夹（Python安装目录视环境而异），将`pyobject`包，`pymodhook.py`，[\_\_hook\_\_.py](tools/templates/__hook__.py)复制到目录下：  
+再打开`<Python安装目录>/Lib/site-packages`文件夹（Python安装目录视环境而异），将`pyobject`包，`pymodhook.py`，`pymodhook-patches`目录，和[\_\_hook\_\_.py](tools/templates/__hook__.py)复制到目录下：  
 ![](https://i-blog.csdnimg.cn/direct/5f4f06b6234d43d393e083786e10751a.png)  
 另外如果是Python 3.8或以下的版本，还需要复制`astor`模块。  
 
@@ -407,7 +407,7 @@ The repository directory [hook_win32](https://github.com/qfcy/PyModuleHook/tree/
 
 #### 1. Copy Module Files  
 Firstly, install `pymodhook` and its dependency `pyobject` using `pip install pymodhook`.  
-Then navigate to `<Python installation directory>/Lib/site-packages` (the Python installation directory may vary depending on the environment) and copy the `pyobject` package, `pymodhook.py`, and [\_\_hook\_\_.py](tools/templates/__hook__.py) into the directory:  
+Then navigate to `<Python installation directory>/Lib/site-packages` (the Python installation directory may vary depending on the environment) and copy the `pyobject` package, `pymodhook.py`, the `pymodhook-patches` directory, and [\_\_hook\_\_.py](tools/templates/__hook__.py) into the directory:  
 ![](https://i-blog.csdnimg.cn/direct/c23cec23ff2b41b0a5086d5e12e25ccf.png)  
 Additionally, if using Python 3.8 or earlier, the `astor` module must also be copied.  
 
