@@ -1,18 +1,24 @@
 """
-A library for recording arbitrary calls to Python modules, primarily intended for Python reverse engineering and analysis.
+A library for recording arbitrary calls to Python modules, \
+primarily intended for Python reverse engineering and analysis.
 记录任意对Python模块的调用的库，主要用于Python逆向分析。\
 """
-import sys,os,json,builtins,importlib
-import pyobject.objproxy as objproxy # 用于找出objproxy本身依赖的库
-from pyobject import make_iter, ObjChain, ProxiedObj
+import os,json,builtins,importlib
+import pprint,types,functools
 from inspect import ismodule
+from pyobject import objproxy # 用于找出objproxy本身依赖的库
+from pyobject import make_iter, ObjChain, ProxiedObj
 
-__version__ = "1.0"
+__version__ = "1.0.1"
+__all__ = ["hook_module","hook_modules","unhook_module",
+           "dump_scope","enable_hook","disable_hook","init_hook",
+           "get_code","get_optimized_code","get_scope_dump",
+           "getchain","dump_scope"]
 
 UNHOOKABLE = [__name__, "sys", "inspect", "builtins"] # 无法hook的模块
-for obj in make_iter(objproxy,3): # pyobject.objproxy及本身依赖的其他库无法被hook
-    if ismodule(obj) and obj.__name__ not in UNHOOKABLE:
-        UNHOOKABLE.append(obj.__name__)
+for _obj in make_iter(objproxy, 3): # pyobject.objproxy及本身依赖的其他库无法被hook
+    if ismodule(_obj) and _obj.__name__ not in UNHOOKABLE:
+        UNHOOKABLE.append(_obj.__name__)
 
 PATCH_PATH = os.path.join(os.path.split(__file__)[0],"pymodhook-patches")
 
@@ -78,7 +84,7 @@ _deep_hook = {}
 _deep_hook_internal = {}
 _hook_reload = {}
 
-_imported_hookonce_modules = {} # hook一次，并导入过一次的模块名称集合
+_imported_hookonce_modules = set() # hook一次，并导入过一次的模块名称集合
 _enable_hook = False
 
 _orig_import = __import__
@@ -221,15 +227,15 @@ def unhook_module(module_name):
     del _hook_data[module_name]
     if _deep_hook[module_name]:
         mod = import_module(module_name)
-        obj = getattr(mod, attr)
         for attr in dir(mod):
+            obj = getattr(mod, attr)
             if isinstance(obj, ProxiedObj):
                 setattr(mod, attr, obj._ProxiedObj__target_obj)
-                
+
 def enable_hook():
-    global _enable_hook;_enable_hook = True
+    global _enable_hook;_enable_hook = True # pylint: disable=global-variable-not-assigned
 def disable_hook():
-    global _enable_hook;_enable_hook = False
+    global _enable_hook;_enable_hook = False # pylint: disable=global-variable-not-assigned
 
 def init_hook(export_trivial_obj=True, **kw):
     global _chain
@@ -244,6 +250,56 @@ def get_scope_dump(): # 返回_chain的命名空间字典的浅复制
     return _chain.scope.copy()
 def getchain():
     return _chain
+
+
+# 修改pprint库
+def replace_func_globals(func, glob):
+    # 替换函数的全局变量命名空间
+    return types.FunctionType(
+        func.__code__, glob,
+        name=func.__name__,
+        argdefs=func.__defaults__,
+        closure=func.__closure__
+    )
+
+_pre_dispatch = pprint.PrettyPrinter._dispatch
+def get_err_format(obj, err):
+    return f"""{object.__repr__(obj)} \
+({type(err).__name__} in pymodhook: {err})""" # 回退到object.__repr__，同时输出错误消息
+
+def _write_error(func): # 装饰器
+    @functools.wraps(func)
+    def inner_dispatch(self, object, stream, *args, **kw):
+        try:
+            func(self, object, stream, *args, **kw)
+        except Exception as err:
+            stream.write(get_err_format(object, err))
+    return inner_dispatch
+def _hook_pprint():
+    # 重定向pprint库使用的repr内置函数，并修改PrettyPrinter._dispatch
+    glob = vars(pprint)
+    glob["repr"] = _repr_func
+    pprint.PrettyPrinter._dispatch = pprint.PrettyPrinter._dispatch.copy()
+    for item in pprint.PrettyPrinter._dispatch:
+        pprint.PrettyPrinter._dispatch[item] = _write_error(
+                                    pprint.PrettyPrinter._dispatch[item])
+def _unhook_pprint():
+    vars(pprint)["__builtins__"]["repr"] = builtins.repr
+    pprint.PrettyPrinter._dispatch = _pre_dispatch
+def _pprint(*args, **kw): # 修改后的pprint.pprint
+    _hook_pprint()
+    pprint.pprint(*args, **kw)
+    _unhook_pprint()
+
+def _repr_func(obj):
+    try:
+        return builtins.repr(obj)
+    except Exception as err:
+        return get_err_format(obj, err) # 显示调用repr()时的错误
+def dump_scope(file=None,**kw):
+    # 以pprint输出全部变量的dump，会忽略调用repr()本身时发生的错误
+    _pprint(get_scope_dump(), stream=file, **kw)
+
 
 def test():
     init_hook()

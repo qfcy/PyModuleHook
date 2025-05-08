@@ -2,3 +2,4 @@ include pymodhook-patches/*
 exclude README.md  
 exclude README.rst
 exclude pymodhook.egg-info/*
+exclude tools/*

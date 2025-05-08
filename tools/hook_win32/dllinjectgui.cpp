@@ -99,7 +99,7 @@ void DLLInjectGUI::onInject() {
             }
         }
     }
-    if(!msgs.empty()) msgs += "Errors:\n";
+    if(!msgs.empty()) msgs = "Errors:\n" + msgs;
     QMessageBox::information(this, "DLL Injection",
                              QString("Injection finished.\nSuccess: %1\nFailed: %2\n%3")\
                                  .arg(success).arg(fail).arg(msgs.c_str()));
