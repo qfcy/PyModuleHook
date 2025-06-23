@@ -50,5 +50,5 @@ setup(
         "Topic :: Software Development :: Bug Tracking",
         "Topic :: Software Development :: Object Brokering",
         "Topic :: Software Development :: Testing"],
-    install_requires=["pyobject>=1.2.9.2"],
+    install_requires=["pyobject>=1.3.1"],
 )

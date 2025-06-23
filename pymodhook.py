@@ -9,7 +9,7 @@ from inspect import ismodule
 from pyobject import objproxy # 用于找出objproxy本身依赖的库
 from pyobject import make_iter, ObjChain, ProxiedObj
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __all__ = ["hook_module","hook_modules","unhook_module",
            "dump_scope","enable_hook","disable_hook","init_hook",
            "get_code","get_optimized_code","get_scope_dump",
@@ -153,6 +153,7 @@ def _deep_hook_module(modobj, modvar_name = None, statement = None,
     data = _hook_data.get(module_name,{})
     export_attrs=data.get("export_attrs",[])
     export_funcs=data.get("export_funcs",[])
+    use_proxied_obj=data.get("use_proxied_obj",[])
     alias_name = data.get("alias_name")
     if alias_name is None:
         alias_name = module_name.split(".")[-1]
@@ -180,8 +181,9 @@ def _deep_hook_module(modobj, modvar_name = None, statement = None,
         hooked = _chain.add_existing_obj(obj, varname,
                                          f"{varname} = {modvar_name}.{attr}",
                                          [modvar_name],
-                                         _export_call=attr in export_funcs,
-                                         extra_info = {"_optional_stat": True},) # 可选语句
+                                         _export_call = attr in export_funcs,
+                                         extra_info = {"_optional_stat": True}, # 可选语句
+                                         use_exported_obj = attr not in use_proxied_obj)
         setattr(modobj, attr, hooked)
         _chain.update_exports(modvar_name, attr, varname)
 
