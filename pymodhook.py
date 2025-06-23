@@ -3,13 +3,17 @@ A library for recording arbitrary calls to Python modules, \
 primarily intended for Python reverse engineering and analysis.
 记录任意对Python模块的调用的库，主要用于Python逆向分析。\
 """
-import os,json,builtins,importlib
+import sys,os,json,builtins,importlib
 import pprint,types,functools
 from inspect import ismodule
-from pyobject import objproxy # 用于找出objproxy本身依赖的库
-from pyobject import make_iter, ObjChain, ProxiedObj
+try:
+    from pyobject import objproxy # 用于找出objproxy本身依赖的库
+    from pyobject import make_iter, ObjChain, ProxiedObj
+except ImportError:
+    objproxy = None; make_iter = lambda *args:[]
+    if "setup.py" not in sys.argv[0].lower():raise
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 __all__ = ["hook_module","hook_modules","unhook_module",
            "dump_scope","enable_hook","disable_hook","init_hook",
            "get_code","get_optimized_code","get_scope_dump",
@@ -61,11 +65,6 @@ def _get_hooked_module(module_name, base_name = None, mod_obj = None,
         if statement is None:
             statement = f"{varname} = __import__({module_name!r})"
         extra_info = {"_alias_name":alias_name}
-        # 更新export_attrs和export_funcs
-        for i in range(len(export_attrs)):
-            submod = ".".join(module_name.split(".")[1:]+export_attrs[i].split("."))
-        for i in range(len(export_funcs)):
-            submod = ".".join(module_name.split(".")[1:]+export_funcs[i].split("."))
 
     if mod_obj is not None:
         hooked_mod = _chain.add_existing_obj(mod_obj,varname,statement,
@@ -89,7 +88,7 @@ _enable_hook = False
 
 _orig_import = __import__
 _orig_reload = importlib.reload
-def __import__(module_name,globals_=None, locals_=None,*args,**kw):
+def __import__(module_name,globals_=None,locals_=None,*args,**kw):
     if isinstance(module_name, ProxiedObj):
         module_name = module_name._ProxiedObj__target_obj
     module = _orig_import(module_name,globals_,locals_,*args,**kw)
@@ -271,11 +270,11 @@ def get_err_format(obj, err):
 
 def _write_error(func): # 装饰器
     @functools.wraps(func)
-    def inner_dispatch(self, object, stream, *args, **kw):
+    def inner_dispatch(self, obj, stream, *args, **kw):
         try:
-            func(self, object, stream, *args, **kw)
+            func(self, obj, stream, *args, **kw)
         except Exception as err:
-            stream.write(get_err_format(object, err))
+            stream.write(get_err_format(obj, err))
     return inner_dispatch
 def _hook_pprint():
     # 重定向pprint库使用的repr内置函数，并修改PrettyPrinter._dispatch

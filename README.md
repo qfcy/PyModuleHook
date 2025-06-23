@@ -140,12 +140,12 @@ The `pymodhook-patches` directory contains multiple JSON files named after Pytho
 For example, the structure of `matplotlib.pyplot.json` is as follows:  
 ```json5
 {
-    // All keys are optional  
-    "export_attrs": ["attr"],  // Attribute names to export (i.e., `plt.attr` returns the original object instead of a `pyobject.ProxiedObj`)  
-    "export_funcs": ["plot", "show"],  // Function names to export (i.e., return values remain original objects instead of being wrapped)  
-    "alias_name": "plt",  // Common module alias (e.g., used for code generation formatting, such as `import matplotlib.pyplot as plt`)  
-    "use_proxied_obj":["Figure"] // Functions/classes that require further tracking; if the output code lacks certain calls, this item can be modified.
-}  
+    // All keys are optional
+    "export_attrs": ["attr"],  // Attribute names to export (i.e., `plt.attr` returns the original object instead of a `pyobject.ProxiedObj`)
+    "export_funcs": ["plot", "show"],  // Function names to export (i.e., return values remain original objects instead of being wrapped)
+    "alias_name": "plt",  // Common module alias (e.g., used for code generation formatting, such as `import matplotlib.pyplot as plt`)
+    "use_proxied_obj":["Figure"] // Functions/classes that require further tracking; if the output code lacks certain calls, this item can be modified (effective only when deep_hook=True).
+}
 ```
 
 ## Usage of DLL Injection Tool  

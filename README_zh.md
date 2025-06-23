@@ -139,7 +139,7 @@ pymodhook-patches目录内部包含了多个以模块名命名的json文件，�
     "export_attrs":["attr"], // 要导出的函数/类名（即plt.attr返回原始对象，而不是pyobject.ProxiedObj）
     "export_funcs":["plot","show"], // 要导出的函数名（即函数的调用返回值是原始对象，而不是pyobject.ProxiedObj）
     "alias_name":"plt", // 模块的常用别名，用于控制代码生成格式（如import matplotlib.pyplot as plt）
-    "use_proxied_obj":["Figure"] // 需进一步深入追踪的函数/类名，若输出的代码缺少某些调用，可修改此项
+    "use_proxied_obj":["Figure"] // 需进一步深入追踪的函数/类名，若输出的代码缺少某些调用，可修改此项（仅用于deep_hook=True）
 }
 ```
 
