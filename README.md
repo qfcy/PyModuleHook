@@ -162,7 +162,7 @@ Additionally, if using Python 3.8 or earlier, the `astor` module must also be co
 #### 2. Modify \_\_hook\_\_.py  
 `__hook__.py` is the first piece of Python code executed by the injected DLL. The default `__hook__.py` is as follows:  
 ```python  
-# Template for __hook__.py to be placed in the packaged program directory  
+# Template for __hook__.py to be placed in the packaged program directory
 import atexit, pprint, traceback
 
 CODE_FILE = "hook_output.py"

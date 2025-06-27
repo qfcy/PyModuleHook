@@ -1,3 +1,4 @@
+# Template for __hook__.py to be placed in the packaged program directory
 # 放入打包程序目录的__hook__.py的模板
 import atexit, pprint, traceback
 
@@ -13,7 +14,7 @@ def export_code():
         with open(VAR_DUMP_FILE, "w", encoding="utf-8") as f:
             dump_scope(file=f)
         with open(OPTIMIZED_CODE_FILE, "w", encoding="utf-8") as f:
-            f.write(get_optimized_code())
+            f.write(get_optimized_code(remove_internal_level=1)) # This line can be modified
     except Exception:
         with open(ERR_FILE, "w", encoding="utf-8") as f:
             traceback.print_exc(file=f)
@@ -23,7 +24,7 @@ try:
     from pyobject.objproxy import ReprFormatProxy
 
     init_hook()
-    hook_modules("wx","matplotlib.pyplot","requests",deep_hook=True) # 本行可修改
+    hook_modules("wx","matplotlib.pyplot","requests",deep_hook=True) # This line can be modified
     atexit.register(export_code)
 except Exception:
     with open(ERR_FILE, "w", encoding="utf-8") as f:
