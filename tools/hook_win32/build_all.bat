@@ -17,4 +17,4 @@ popd
 mkdir dist\hook_win32 2> nul
 copy build\MinGW_14_2_0_64_bit-Release\hook_win32.exe dist\hook_win32\hook_win32.exe
 windeployqt dist\hook_win32\hook_win32.exe
-xcopy /E /I /Y hook_backend\* dist\hook_win32\hook_backend
+xcopy /E /I /Y hook_backend\bin\* dist\hook_win32\hook_backend

@@ -27,7 +27,7 @@ bool injectDLL(DWORD pid, const char *dllPath) {
     // 转换为绝对路径
     char fullPath[MAX_PATH];
     if(!GetFullPathNameA(dllPath, MAX_PATH, fullPath, nullptr)){
-        lastErrMsg = "Failed to get absolute path of DLL";
+        lastErrMsg = "Failed to get the absolute path of DLL";
         goto free_remote_mem;
     }
     // 写入DLL路径

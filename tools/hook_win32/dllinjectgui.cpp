@@ -12,7 +12,7 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
-const char *DLL_PATH = "hook_backend\\bin\\hook.dll";
+const char *DLL_PATH = "hook_backend\\hook.dll";
 
 // Helper: 获取所有进程名和PID
 QList<QPair<QString, DWORD>> getAllProcesses() {
